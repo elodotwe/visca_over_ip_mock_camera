@@ -35,7 +35,8 @@ class VISCAPacket:
 class PacketDecoder:
 	def __init__(self) -> None:
 		self.packet_definitions: List[Type[VISCAPacket]] = [
-			PanTiltPositionInq
+			PanTiltPositionInq,
+			ZoomPositionInq
 		]
 
 	def _bytes_and(self, abytes: bytes, bbytes: bytes) -> bytes:
@@ -55,6 +56,13 @@ class PanTiltPositionInq(VISCAPacket):
 
 	def __repr__(self) -> str:
 		return "PanTiltPositionInq " + super().__repr__()
+
+class ZoomPositionInq(VISCAPacket):
+	signature = b"\x09\x04\x47"
+	signature_mask = b"\xff\xff\xff"
+
+	def __repr__(self) -> str:
+		return "ZoomPositionInq " + super().__repr__()
 
 def parse_visca(accumulated_data: bytes) -> Tuple[bytes, List[VISCAPacket]]:
 	result_packets: List[VISCAPacket] = []
@@ -86,8 +94,10 @@ def listen_thread(camera_client_socket: socket.socket):
 		(incoming, packets) = parse_visca(incoming)
 
 		for packet in packets:
-			print(packet)
-			print(repr(decoder.decode(packet)))
+			print("Rx: {}".format(packet))
+			decoded = decoder.decode(packet)
+
+			print("  decoded: {}".format(repr(decoded)))
 
 
 		
