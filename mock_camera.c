@@ -25,7 +25,10 @@ int main() {
     while ((count = jr_socket_receive(clientSocket, buffer, 1024)) > 0) {
         printf("recv: ");
         hex_print(buffer, count);
+        printf("\n");
     }
+
+    printf("Connection spun down, terminating.\n");
 
     jr_socket_closeSocket(clientSocket);
     jr_socket_closeServerSocket(serverSocket);
