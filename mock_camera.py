@@ -64,6 +64,13 @@ class ZoomPositionInq(VISCAPacket):
 	def __repr__(self) -> str:
 		return "ZoomPositionInq " + super().__repr__()
 
+class ZoomPositionInqResponse(VISCAPacket):
+	signature = b"\x50\x00\x00\x00\x00\x00\x00\x00\x00"
+	signature_mask = b"\xff\xf0\xf0\xf0\xf0\xf0\xf0\xf0\xf0"
+
+	def __repr__(self) -> str:
+		return "ZoomPositionInqResponse " + super().__repr__()
+
 def parse_visca(accumulated_data: bytes) -> Tuple[bytes, List[VISCAPacket]]:
 	result_packets: List[VISCAPacket] = []
 	while len(accumulated_data) > 0:
@@ -78,6 +85,14 @@ def parse_visca(accumulated_data: bytes) -> Tuple[bytes, List[VISCAPacket]]:
 		accumulated_data = accumulated_data[terminator_index+1:]
 
 	return (accumulated_data, result_packets)
+
+def encode_visca(packet: VISCAPacket) -> bytes:
+	output: List[int] = []
+	address = 0x80 + (packet.sender << 4) + packet.receiver
+	output.append(address)
+	output += packet.data
+	output.append(0xff)
+	return bytes(output)
 
 def listen_thread(camera_client_socket: socket.socket):
 	print("listen thread spun up")
@@ -99,8 +114,12 @@ def listen_thread(camera_client_socket: socket.socket):
 
 			print("  decoded: {}".format(repr(decoded)))
 
+def send_packet(packet: VISCAPacket, socket: socket.socket):
+	socket.sendall(encode_visca(packet))
 
-		
+def respond_to(packet: VISCAPacket, socket: socket.socket):
+	if isinstance(packet, PanTiltPositionInq):
+		send_packet()
 
 while True:
 	(camera_client_socket, address) = camera_server_socket.accept()
