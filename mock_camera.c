@@ -37,6 +37,6 @@ int main() {
 
 void hex_print(char *buf, int buf_size) {
     for (int i = 0; i < buf_size; i++) {
-        printf("%2x ", buf[i]);
+        printf("%02hhx ", buf[i]);
     }
 }
