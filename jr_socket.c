@@ -18,7 +18,11 @@ int jr_socket_setupServerSocket(int port, jr_server_socket *serverSocket) {
     // This protection exists to prevent packets from a previous connection affecting this connection.
     // Not a concern when we're playing on a local Wifi connection with a toy project.
     int enable = 1;
-    setsockopt(serverSocket->_serverSocket, IPPROTO_IP, SO_REUSEADDR, &enable, sizeof(enable));
+    int result = setsockopt(serverSocket->_serverSocket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
+    if (result == -1) {
+        perror("setsockopt");
+        return -1;
+    }
 
     struct sockaddr_in address = { 0 };
     address.sin_family = AF_INET;
