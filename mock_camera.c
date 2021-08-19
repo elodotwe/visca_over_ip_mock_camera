@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "jr_socket.h"
 
-void hex_print(char *buf, int buf_size);
+#include "jr_hex_print.h"
 
 int main() {
     printf("hello\n");
@@ -35,8 +35,3 @@ int main() {
     return 0;
 }
 
-void hex_print(char *buf, int buf_size) {
-    for (int i = 0; i < buf_size; i++) {
-        printf("%02hhx ", buf[i]);
-    }
-}

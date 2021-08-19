@@ -1,0 +1,3 @@
+[submodule "libjr_util"]
+	path = libjr_util
+	url = git@github.com:elodotwe/libjr_util.git
