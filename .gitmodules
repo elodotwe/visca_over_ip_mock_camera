@@ -4,3 +4,6 @@
 [submodule "libjr_socket"]
 	path = libjr_socket
 	url = git@github.com:elodotwe/libjr_socket.git
+[submodule "libjr_visca"]
+	path = libjr_visca
+	url = git@github.com:elodotwe/libjr_visca.git
