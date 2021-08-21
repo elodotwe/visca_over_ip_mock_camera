@@ -39,6 +39,21 @@ int main() {
                 printf("sender: %d, receiver: %d, data: ", frame.sender, frame.receiver);
                 hex_print(frame.data, frame.dataLength);
                 printf("\n");
+                union jr_viscaMessageParameters messageParameters;
+                int messageType = jr_viscaDecodeFrame(frame, &messageParameters);
+                printf("message type %d\n", messageType);
+                switch (messageType)
+                {
+                case JR_VISCA_MESSAGE_PAN_TILT_POSITION_INQ:
+                    printf("pan tilt inq\n");
+                    break;
+                case JR_VISCA_MESSAGE_ZOOM_POSITION_INQ:
+                    printf("zoom inq\n");
+                    break;
+                default:
+                    printf("unknown\n");
+                    break;
+                }
 
                 count -= consumed;
                 // Crappy naive buffer management-- move remaining bytes up to buffer[0].
