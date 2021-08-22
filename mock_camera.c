@@ -34,6 +34,11 @@ int main() {
         int consumed;
         do {
             consumed = jr_viscaDataToFrame(buffer, count, &frame);
+            if (consumed < 0) {
+                printf("error, bailing\n");
+                goto bailTCPLoop;
+            }
+
             if (consumed) {
                 printf("found %d-byte frame: ", consumed);
                 printf("sender: %d, receiver: %d, data: ", frame.sender, frame.receiver);
@@ -63,6 +68,7 @@ int main() {
             }
         } while (consumed);
     }
+bailTCPLoop:
 
     printf("Connection spun down, terminating.\n");
 
