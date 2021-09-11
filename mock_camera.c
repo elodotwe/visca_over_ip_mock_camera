@@ -4,6 +4,27 @@
 #include <jr_hex_print.h>
 #include <jr_visca.h>
 #include <string.h>
+#include <stdlib.h>
+
+void sendMessage(int messageType, union jr_viscaMessageParameters parameters, jr_socket socket) {
+    jr_viscaFrame frame;
+    if (jr_viscaEncodeFrame(messageType, parameters, &frame) != 0) {
+        printf("error encoding response\n");
+        exit(1);
+    }
+
+    uint8_t resultData[18];
+    int dataLength = jr_viscaFrameToData(resultData, sizeof(resultData), frame);
+    if (dataLength < 0) {
+        printf("error converting frame to data\n");
+        exit(1);
+    }
+
+    if (jr_socket_send(socket, resultData, dataLength) == -1) {
+        printf("error sending response\n");
+        exit(1);
+    }
+}
 
 int main() {
     printf("hello\n");
@@ -47,11 +68,17 @@ int main() {
                 union jr_viscaMessageParameters messageParameters;
                 int messageType = jr_viscaDecodeFrame(frame, &messageParameters);
                 printf("message type %d\n", messageType);
+
+                union jr_viscaMessageParameters response;
                 switch (messageType)
                 {
-                case JR_VISCA_MESSAGE_PAN_TILT_POSITION_INQ:
+                case JR_VISCA_MESSAGE_PAN_TILT_POSITION_INQ: {
                     printf("pan tilt inq\n");
+                    response.panTiltPositionInqResponseParameters.panPosition = 0x1234;
+                    response.panTiltPositionInqResponseParameters.tiltPosition = 0x2345;
+                    sendMessage(JR_VISCA_MESSAGE_PAN_TILT_POSITION_INQ_RESPONSE, response, clientSocket);
                     break;
+                }
                 case JR_VISCA_MESSAGE_ZOOM_POSITION_INQ:
                     printf("zoom inq\n");
                     break;
