@@ -121,6 +121,34 @@ int main() {
                 case JR_VISCA_MESSAGE_ZOOM_WIDE_VARIABLE:
                     printf("zoom out at %x\n", messageParameters.zoomVariableParameters.zoomSpeed);
                     break;
+                case JR_VISCA_MESSAGE_PAN_TILT_DRIVE:
+                    printf("pan tilt drive: ");
+                    switch (messageParameters.panTiltDriveParameters.panDirection) {
+                    case JR_VISCA_PAN_DIRECTION_LEFT:
+                        printf("left %d ", messageParameters.panTiltDriveParameters.panSpeed);
+                        break;
+                    case JR_VISCA_PAN_DIRECTION_RIGHT:
+                        printf("right  %d ", messageParameters.panTiltDriveParameters.panSpeed);
+                        break;
+                    case JR_VISCA_PAN_DIRECTION_STOP:
+                        printf("pan-stop ");
+                        break;
+                    }
+
+                    switch (messageParameters.panTiltDriveParameters.tiltDirection) {
+                    case JR_VISCA_TILT_DIRECTION_DOWN:
+                        printf("down %d ", messageParameters.panTiltDriveParameters.tiltSpeed);
+                        break;
+                    case JR_VISCA_TILT_DIRECTION_UP:
+                        printf("up %d ", messageParameters.panTiltDriveParameters.tiltSpeed);
+                        break;
+                    case JR_VISCA_TILT_DIRECTION_STOP:
+                        printf("tilt-stop ");
+                        break;
+                    }
+                    printf("\n");
+
+                    break;
                 default:
                     printf("unknown: ");
                     printf("sender: %d, receiver: %d, data: ", frame.sender, frame.receiver);
