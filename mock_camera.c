@@ -14,11 +14,16 @@ void sendMessage(int messageType, union jr_viscaMessageParameters parameters, jr
     }
 
     uint8_t resultData[18];
+    frame.sender = 1;
+    frame.receiver = 0;
     int dataLength = jr_viscaFrameToData(resultData, sizeof(resultData), frame);
     if (dataLength < 0) {
         printf("error converting frame to data\n");
         exit(1);
     }
+    printf("send: ");
+    hex_print(resultData, dataLength);
+    printf("\n");
 
     if (jr_socket_send(socket, resultData, dataLength) == -1) {
         printf("error sending response\n");
@@ -81,6 +86,8 @@ int main() {
                 }
                 case JR_VISCA_MESSAGE_ZOOM_POSITION_INQ:
                     printf("zoom inq\n");
+                    response.zoomPositionInqResponseParameters.zoomPosition = 0x3456;
+                    sendMessage(JR_VISCA_MESSAGE_ZOOM_POSITION_INQ_RESPONSE, response, clientSocket);
                     break;
                 default:
                     printf("unknown\n");
