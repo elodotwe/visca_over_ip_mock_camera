@@ -91,7 +91,7 @@ int main() {
                 }
                 case JR_VISCA_MESSAGE_ZOOM_POSITION_INQ:
                     printf("zoom inq\n");
-                    response.zoomPositionInqResponseParameters.zoomPosition = 0x3456;
+                    response.zoomPositionParameters.zoomPosition = 0x3456;
                     sendMessage(JR_VISCA_MESSAGE_ZOOM_POSITION_INQ_RESPONSE, response, clientSocket);
                     break;
                 case JR_VISCA_MESSAGE_FOCUS_AUTOMATIC:
@@ -102,6 +102,24 @@ int main() {
                     printf("focus manual\n");
                     response.ackCompletionParameters.socketNumber = 1;
                     sendAckCompletion(1, clientSocket);
+                    break;
+                case JR_VISCA_MESSAGE_ZOOM_DIRECT:
+                    printf("zoom direct to position %x\n", messageParameters.zoomPositionParameters.zoomPosition);
+                    break;
+                case JR_VISCA_MESSAGE_ZOOM_STOP:
+                    printf("zoom stop\n");
+                    break;
+                case JR_VISCA_MESSAGE_ZOOM_TELE_STANDARD:
+                    printf("zoom in standard\n");
+                    break;
+                case JR_VISCA_MESSAGE_ZOOM_WIDE_STANDARD:
+                    printf("zoom out standard\n");
+                    break;
+                case JR_VISCA_MESSAGE_ZOOM_TELE_VARIABLE:
+                    printf("zoom in at %x\n", messageParameters.zoomVariableParameters.zoomSpeed);
+                    break;
+                case JR_VISCA_MESSAGE_ZOOM_WIDE_VARIABLE:
+                    printf("zoom out at %x\n", messageParameters.zoomVariableParameters.zoomSpeed);
                     break;
                 default:
                     printf("unknown: ");
