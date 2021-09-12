@@ -21,9 +21,9 @@ void sendMessage(int messageType, union jr_viscaMessageParameters parameters, jr
         printf("error converting frame to data\n");
         exit(1);
     }
-    printf("send: ");
-    hex_print(resultData, dataLength);
-    printf("\n");
+    // printf("send: ");
+    // hex_print(resultData, dataLength);
+    // printf("\n");
 
     if (jr_socket_send(socket, resultData, dataLength) == -1) {
         printf("error sending response\n");
@@ -54,9 +54,9 @@ int main() {
     int latestCount;
     while ((latestCount = jr_socket_receive(clientSocket, buffer + count, 1024 - count)) > 0) {
         count += latestCount;
-        printf("recv: ");
-        hex_print(buffer, count);
-        printf("\n");
+        // printf("recv: ");
+        // hex_print(buffer, count);
+        // printf("\n");
         int consumed;
         do {
             consumed = jr_viscaDataToFrame(buffer, count, &frame);
@@ -66,13 +66,11 @@ int main() {
             }
 
             if (consumed) {
-                printf("found %d-byte frame: ", consumed);
-                printf("sender: %d, receiver: %d, data: ", frame.sender, frame.receiver);
-                hex_print(frame.data, frame.dataLength);
-                printf("\n");
+                // printf("found %d-byte frame: ", consumed);
+                
                 union jr_viscaMessageParameters messageParameters;
                 int messageType = jr_viscaDecodeFrame(frame, &messageParameters);
-                printf("message type %d\n", messageType);
+                //printf("message type %d\n", messageType);
 
                 union jr_viscaMessageParameters response;
                 switch (messageType)
@@ -90,7 +88,10 @@ int main() {
                     sendMessage(JR_VISCA_MESSAGE_ZOOM_POSITION_INQ_RESPONSE, response, clientSocket);
                     break;
                 default:
-                    printf("unknown\n");
+                    printf("unknown: ");
+                    printf("sender: %d, receiver: %d, data: ", frame.sender, frame.receiver);
+                    hex_print(frame.data, frame.dataLength);
+                    printf("\n");
                     break;
                 }
 
