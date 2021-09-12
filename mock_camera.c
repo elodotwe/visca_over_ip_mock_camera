@@ -31,6 +31,13 @@ void sendMessage(int messageType, union jr_viscaMessageParameters parameters, jr
     }
 }
 
+void sendAckCompletion(uint8_t socketNumber, jr_socket socket) {
+    union jr_viscaMessageParameters parameters;
+    parameters.ackCompletionParameters.socketNumber = socketNumber;
+    sendMessage(JR_VISCA_MESSAGE_ACK, parameters, socket);
+    sendMessage(JR_VISCA_MESSAGE_COMPLETION, parameters, socket);
+}
+
 int main() {
     printf("hello\n");
 
@@ -86,6 +93,15 @@ int main() {
                     printf("zoom inq\n");
                     response.zoomPositionInqResponseParameters.zoomPosition = 0x3456;
                     sendMessage(JR_VISCA_MESSAGE_ZOOM_POSITION_INQ_RESPONSE, response, clientSocket);
+                    break;
+                case JR_VISCA_MESSAGE_FOCUS_AUTOMATIC:
+                    printf("focus automatic\n");
+                    sendAckCompletion(1, clientSocket);
+                    break;
+                case JR_VISCA_MESSAGE_FOCUS_MANUAL:
+                    printf("focus manual\n");
+                    response.ackCompletionParameters.socketNumber = 1;
+                    sendAckCompletion(1, clientSocket);
                     break;
                 default:
                     printf("unknown: ");
